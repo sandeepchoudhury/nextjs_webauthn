@@ -1,4 +1,4 @@
-import { connectMongo } from "@/lib/DBConnect";
+import { connectMongo } from "@/lib/dbConnect";
 import User from "@/models/User";
 import NextAuth,{AuthOptions} from "next-auth";
 import CredentialsProvider  from "next-auth/providers/credentials";
