@@ -95,7 +95,7 @@ function LoginForm() {
             href={'/register'}
             className="text-sm mt-3 text-right"
         >
-            Don't have an account? <span className="underline">
+            Dont have an account? <span className="underline">
                 Register
             </span>
         </Link></div>
