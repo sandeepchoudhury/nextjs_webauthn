@@ -19,7 +19,10 @@ const Authenticator = new Schema({
     },
     transports:{
         type:[String]
-    }
+    },
+    authenticatorID:{
+        type:String
+    },
 })
 
 const userSchema = new Schema({

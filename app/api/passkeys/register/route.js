@@ -60,7 +60,7 @@ export async function POST(req){
     const user = await User.findById({"_id":userId})
     
     
-    const response = await req.JSON()
+    const response = await req.json()
     const expectedChallenge = user.currentChallenge;
     console.log("REGISTRATION POST :", response)
 

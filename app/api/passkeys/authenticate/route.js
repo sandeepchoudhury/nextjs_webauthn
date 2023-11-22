@@ -1,12 +1,12 @@
-import { getServerSession} from "next-auth";
-import { NextRequest, NextResponse } from "next/server";
-import NextAuthOptionsMyProject , { expectedOrigin, rpID, rpName }    from "@/app/api/auth/[...nextauth]/options"
+
+import { NextResponse } from "next/server";
+import {rpID }    from "@/app/api/auth/[...nextauth]/options"
 import { connectMongo } from "@/lib/DBConnect";
 import User from "@/models/User";
 import { generateAuthenticationOptions } from "@simplewebauthn/server";
 import {fromBase64} from "@/lib/convert"
 
-export const POST = async (req) => {
+export async function POST(req) {
     try {
 
         await connectMongo();
@@ -17,7 +17,7 @@ export const POST = async (req) => {
             return new NextResponse("no Authenticators or users registered.",{status:401})
         }
         const existingAuthenticators = user.authenticators;
-        const options = generateAuthenticationOptions({
+        const options = await generateAuthenticationOptions({
             allowCredentials: existingAuthenticators.map((existingAuthenticator) => ({
               id: fromBase64(existingAuthenticator.authenticatorID),
               type: "public-key",
@@ -27,11 +27,12 @@ export const POST = async (req) => {
             rpID,
           });
 
-        user.currentChallenge = options.challenge
+        user.currentChallenge = options.challenge;
         user.save()
-        console.log("AUTHENTICATION OPTIONS ", options)
-        return new NextResponse.json(JSON.stringify(options),{status:200})
+        console.log("[AUTHENTICATION OPTIONS] ", options)
+        return new NextResponse(JSON.stringify(options),{status:200})
     } catch (error) {
+        console.log("[AUthentication Options] ", error)
         return new NextResponse(error, { status: 401 });
     }
 }

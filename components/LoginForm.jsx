@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useState } from "react"
 import { signIn } from "next-auth/react"
 import { useRouter } from "next/navigation"
-
+import { startAuthentication } from "@simplewebauthn/browser"
 
 function LoginForm() {
     const [email,setEmail] = useState("")
@@ -30,7 +30,44 @@ function LoginForm() {
         }
     }
 
+    const handlePasskey = async (e) => {
+        e.preventDefault();
+        console.log("Loging in via Passkey.")
+        try {
+            const res = await fetch("api/passkeys/authenticate",{
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify({email})
+            });
 
+            if (res.ok){
+                const data = await res.json();
+                try {
+                    console.log("START BROWSER AUTHENTICATION OPTIONS :", data)
+                    const assResp = await startAuthentication(data )
+                    console.log(("START BROWSER AUTHENTICATION  :", assResp))
+                    await signIn("webauthn",{
+                        verification:JSON.stringify(assResp),
+                        email:JSON.stringify(email)
+                    });
+                    router.replace("dashboard")
+                    
+                } catch (error) {
+                    console.log("AUTHENTICATION:", error)
+                    setError("Invalid Credentials.")
+                }
+               
+            } else{
+                setError("Invalid Credentials.")
+            }
+        } catch (error) {
+            console.log("AUTHENTICATION:", error)
+            setError("Invalid Credentials.")
+        }
+    
+    }
 
   return (
     <div className="grid place-items-center h-screen">
@@ -47,6 +84,7 @@ function LoginForm() {
                     onChange={(e) =>{ setPassword(e.target.value)}}
             />
             <button className="bg-green-600 text-white font-bold cursor-pointer px-6 py-2">Login</button>
+            <button className="bg-green-600 text-white font-bold cursor-pointer px-6 py-2" onClick={handlePasskey}>Login by Passkey.</button>
            
            { error && (
             <div className="bg-red-500 text-white w-fit text-sm py-1 px-3 rounded-md mt-2">{error}</div>
