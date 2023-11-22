@@ -1,7 +1,7 @@
 
 import { NextResponse } from "next/server";
 import {rpID }    from "@/app/api/auth/[...nextauth]/options"
-import { connectMongo } from "@/lib/DBConnect";
+import { connectMongo } from "@/lib/dbConnect";
 import User from "@/models/User";
 import { generateAuthenticationOptions } from "@simplewebauthn/server";
 import {fromBase64} from "@/lib/convert"
