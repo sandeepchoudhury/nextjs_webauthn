@@ -6,7 +6,7 @@ import bcrypt from "bcryptjs"
 import { verifyAuthenticationResponse } from "@simplewebauthn/server";
 
 export const rpName = "NextAuth.js + MongoDB + SimpleWebAuthn Example";
-export const rpID = process.env.NODE_ENV === "production" ? "next-auth-webauthn.vercel.app" : "localhost";
+export const rpID = process.env.NODE_ENV === "production" ? "nextjs-webauthn-eta.vercel.app" : "localhost";
 export const origin = process.env.NODE_ENV === "production" ? `https://${rpID}` : `http://${rpID}`;
 export const expectedOrigin = process.env.NODE_ENV === "production" ? origin : `${origin}:3000`;
 
